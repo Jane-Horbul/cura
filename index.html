@@ -8,233 +8,220 @@
 </head>
 <body>
 
-  <!-- ── SCREEN 1: Landing ── -->
-  <div class="screen active" id="screen-landing">
-    <div class="landing-wrap">
-      <div class="logo">
-        <span class="logo-leaf">🌿</span>
-        <span class="logo-text">Cura</span>
-      </div>
-      <h1>Харчування,<br>яке підходить<br><em>саме тобі</em></h1>
-      <p class="lead">Розрахуємо калорії, БЖВ і складемо<br>готовий раціон на день з рецептами.</p>
-      <button class="btn-primary" onclick="App.go('screen-form')">Розпочати →</button>
-    </div>
-  </div>
+  <!-- ── SCREEN 1: Hero + Form (єдиний перший екран) ── -->
+  <div class="screen active" id="screen-home">
+    <div class="home-layout">
 
-  <!-- ── SCREEN 2: Form ── -->
-  <div class="screen" id="screen-form">
-    <div class="form-wrap">
-
-      <!-- Step indicator -->
-      <div class="steps">
-        <div class="step active" data-step="1">1</div>
-        <div class="step-line"></div>
-        <div class="step" data-step="2">2</div>
-        <div class="step-line"></div>
-        <div class="step" data-step="3">3</div>
-        <div class="step-line"></div>
-        <div class="step" data-step="4">4</div>
-      </div>
-
-      <!-- Step 1: Gender -->
-      <div class="form-step active" id="step-1">
-        <h2>Привіт! Яка твоя стать?</h2>
-        <div class="gender-btns">
-          <button class="gender-btn" data-value="male" onclick="App.selectGender('male', this)">
-            <span class="gender-icon">♂</span>
-            <span>Чоловік</span>
-          </button>
-          <button class="gender-btn" data-value="female" onclick="App.selectGender('female', this)">
-            <span class="gender-icon">♀</span>
-            <span>Жінка</span>
-          </button>
+      <!-- Ліворуч: бренд -->
+      <div class="home-hero">
+        <div class="logo">
+          <span class="logo-leaf">🌿</span>
+          <span class="logo-text">Cura</span>
         </div>
-        <div class="step-nav">
-          <button class="btn-outline" onclick="App.go('screen-landing')">← Назад</button>
-          <button class="btn-primary" id="next-1" disabled onclick="App.nextStep(1)">Далі →</button>
-        </div>
+        <h1>Харчування,<br>яке підходить<br><em>саме тобі</em></h1>
+        <p class="lead">Розрахуємо калорії, БЖВ і складемо готовий раціон на день з рецептами.</p>
+        <ul class="hero-features">
+          <li>✓ Формула Міффліна-Сан Жеора</li>
+          <li>✓ Розподіл білків, жирів, вуглеводів</li>
+          <li>✓ 3 варіанти меню з рецептами</li>
+          <li>✓ Адаптація під цикл для жінок</li>
+        </ul>
       </div>
 
-      <!-- Step 2: Body data -->
-      <div class="form-step" id="step-2">
-        <h2>Твої параметри</h2>
-        <div class="inputs-grid">
-          <div class="input-group">
-            <label>Вік</label>
-            <div class="input-wrap">
-              <input type="number" id="age" min="14" max="100" placeholder="25" oninput="App.checkStep2()">
-              <span class="unit">років</span>
-            </div>
+      <!-- Праворуч: форма -->
+      <div class="home-form">
+
+        <div class="steps">
+          <div class="step active" data-step="1">1</div>
+          <div class="step-line"></div>
+          <div class="step" data-step="2">2</div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3">3</div>
+          <div class="step-line"></div>
+          <div class="step" data-step="4">4</div>
+        </div>
+
+        <!-- Крок 1: Стать -->
+        <div class="form-step active" id="step-1">
+          <h2>Яка твоя стать?</h2>
+          <div class="gender-btns">
+            <button class="gender-btn" onclick="App.selectGender('male', this)">
+              <span class="gender-icon">♂</span>
+              <span>Чоловік</span>
+            </button>
+            <button class="gender-btn" onclick="App.selectGender('female', this)">
+              <span class="gender-icon">♀</span>
+              <span>Жінка</span>
+            </button>
           </div>
-          <div class="input-group">
-            <label>Вага</label>
-            <div class="input-wrap">
-              <input type="number" id="weight" min="30" max="300" placeholder="65" oninput="App.checkStep2()">
-              <span class="unit">кг</span>
-            </div>
-          </div>
-          <div class="input-group">
-            <label>Зріст</label>
-            <div class="input-wrap">
-              <input type="number" id="height" min="100" max="250" placeholder="170" oninput="App.checkStep2()">
-              <span class="unit">см</span>
-            </div>
+          <div class="step-nav">
+            <span></span>
+            <button class="btn-primary" id="next-1" disabled onclick="App.nextStep(1)">Далі →</button>
           </div>
         </div>
-        <div class="step-nav">
-          <button class="btn-outline" onclick="App.prevStep(2)">← Назад</button>
-          <button class="btn-primary" id="next-2" disabled onclick="App.nextStep(2)">Далі →</button>
-        </div>
-      </div>
 
-      <!-- Step 3: Activity -->
-      <div class="form-step" id="step-3">
-        <h2>Рівень активності</h2>
-        <div class="activity-list">
-          <label class="activity-card">
-            <input type="radio" name="activity" value="sedentary" onchange="App.checkStep3()">
-            <div class="activity-content">
-              <span class="activity-icon">🪑</span>
-              <div>
-                <strong>Мінімальна</strong>
-                <small>Сидяча робота, без спорту</small>
+        <!-- Крок 2: Параметри -->
+        <div class="form-step" id="step-2">
+          <h2>Твої параметри</h2>
+          <div class="inputs-grid">
+            <div class="input-group">
+              <label>Вік</label>
+              <div class="input-wrap">
+                <input type="number" id="age" min="14" max="100" placeholder="25" oninput="App.checkStep2()">
+                <span class="unit">років</span>
               </div>
             </div>
-          </label>
-          <label class="activity-card">
-            <input type="radio" name="activity" value="light" onchange="App.checkStep3()">
-            <div class="activity-content">
-              <span class="activity-icon">🚶</span>
-              <div>
-                <strong>Легка</strong>
-                <small>Прогулянки, 1-2 тренування на тиждень</small>
+            <div class="input-group">
+              <label>Вага</label>
+              <div class="input-wrap">
+                <input type="number" id="weight" min="30" max="300" placeholder="65" oninput="App.checkStep2()">
+                <span class="unit">кг</span>
               </div>
             </div>
-          </label>
-          <label class="activity-card">
-            <input type="radio" name="activity" value="moderate" onchange="App.checkStep3()">
-            <div class="activity-content">
-              <span class="activity-icon">🏃</span>
-              <div>
-                <strong>Помірна</strong>
-                <small>3-5 тренувань на тиждень</small>
+            <div class="input-group">
+              <label>Зріст</label>
+              <div class="input-wrap">
+                <input type="number" id="height" min="100" max="250" placeholder="170" oninput="App.checkStep2()">
+                <span class="unit">см</span>
               </div>
             </div>
-          </label>
-          <label class="activity-card">
-            <input type="radio" name="activity" value="active" onchange="App.checkStep3()">
-            <div class="activity-content">
-              <span class="activity-icon">🏋️</span>
-              <div>
-                <strong>Висока</strong>
-                <small>6-7 тренувань на тиждень</small>
-              </div>
-            </div>
-          </label>
-          <label class="activity-card">
-            <input type="radio" name="activity" value="veryActive" onchange="App.checkStep3()">
+          </div>
+          <div class="step-nav">
+            <button class="btn-outline" onclick="App.prevStep(2)">← Назад</button>
+            <button class="btn-primary" id="next-2" disabled onclick="App.nextStep(2)">Далі →</button>
+          </div>
+        </div>
+
+        <!-- Крок 3: Активність -->
+        <div class="form-step" id="step-3">
+          <h2>Рівень активності</h2>
+          <div class="activity-list">
+            <label class="activity-card">
+              <input type="radio" name="activity" value="sedentary" onchange="App.checkStep3()">
               <div class="activity-content">
-              <span class="activity-icon">🏅</span>
-              <div>
-                <strong>Дуже висока</strong>
-                <small>Спортсмен, фізична праця</small>
+                <span class="activity-icon">🪑</span>
+                <div><strong>Мінімальна</strong><small>Сидяча робота, без спорту</small></div>
               </div>
-            </div>
-          </label>
-        </div>
-        <div class="step-nav">
-          <button class="btn-outline" onclick="App.prevStep(3)">← Назад</button>
-          <button class="btn-primary" id="next-3" disabled onclick="App.nextStep(3)">Далі →</button>
-        </div>
-      </div>
-
-      <!-- Step 4: Goal -->
-      <div class="form-step" id="step-4">
-        <h2>Яка твоя мета?</h2>
-        <div class="goal-cards">
-          <button class="goal-card" data-value="lose" onclick="App.selectGoal('lose', this)">
-            <span class="goal-icon">📉</span>
-            <strong>Схуднення</strong>
-            <small>−500 ккал від норми</small>
-          </button>
-          <button class="goal-card" data-value="maintain" onclick="App.selectGoal('maintain', this)">
-            <span class="goal-icon">⚖️</span>
-            <strong>Підтримка ваги</strong>
-            <small>Рівно за нормою</small>
-          </button>
-          <button class="goal-card" data-value="gain" onclick="App.selectGoal('gain', this)">
-            <span class="goal-icon">📈</span>
-            <strong>Набір маси</strong>
-            <small>+300 ккал до норми</small>
-          </button>
-        </div>
-
-        <!-- Cycle toggle — only for women -->
-        <div class="cycle-block" id="cycle-block" style="display:none">
-          <div class="cycle-toggle-wrap">
-            <div class="cycle-info">
-              <span class="cycle-icon">🌙</span>
-              <div>
-                <strong>Лютеїнова фаза</strong>
-                <small>Дні 18-28 циклу (+200 ккал)</small>
+            </label>
+            <label class="activity-card">
+              <input type="radio" name="activity" value="light" onchange="App.checkStep3()">
+              <div class="activity-content">
+                <span class="activity-icon">🚶</span>
+                <div><strong>Легка</strong><small>Прогулянки, 1-2 тренування</small></div>
               </div>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" id="cycle-toggle">
-              <span class="toggle-slider"></span>
+            </label>
+            <label class="activity-card">
+              <input type="radio" name="activity" value="moderate" onchange="App.checkStep3()">
+              <div class="activity-content">
+                <span class="activity-icon">🏃</span>
+                <div><strong>Помірна</strong><small>3-5 тренувань на тиждень</small></div>
+              </div>
+            </label>
+            <label class="activity-card">
+              <input type="radio" name="activity" value="active" onchange="App.checkStep3()">
+              <div class="activity-content">
+                <span class="activity-icon">🏋️</span>
+                <div><strong>Висока</strong><small>6-7 тренувань на тиждень</small></div>
+              </div>
+            </label>
+            <label class="activity-card">
+              <input type="radio" name="activity" value="veryActive" onchange="App.checkStep3()">
+              <div class="activity-content">
+                <span class="activity-icon">🏅</span>
+                <div><strong>Дуже висока</strong><small>Спортсмен, фізична праця</small></div>
+              </div>
             </label>
           </div>
+          <div class="step-nav">
+            <button class="btn-outline" onclick="App.prevStep(3)">← Назад</button>
+            <button class="btn-primary" id="next-3" disabled onclick="App.nextStep(3)">Далі →</button>
+          </div>
         </div>
 
-        <div class="step-nav">
-          <button class="btn-outline" onclick="App.prevStep(4)">← Назад</button>
-          <button class="btn-primary" id="next-4" disabled onclick="App.calculate()">Розрахувати ✓</button>
-        </div>
-      </div>
+        <!-- Крок 4: Мета -->
+        <div class="form-step" id="step-4">
+          <h2>Яка твоя мета?</h2>
+          <div class="goal-cards">
+            <button class="goal-card" onclick="App.selectGoal('lose', this)">
+              <span class="goal-icon">📉</span>
+              <strong>Схуднення</strong>
+              <small>−500 ккал від норми</small>
+            </button>
+            <button class="goal-card" onclick="App.selectGoal('maintain', this)">
+              <span class="goal-icon">⚖️</span>
+              <strong>Підтримка</strong>
+              <small>Рівно за нормою</small>
+            </button>
+            <button class="goal-card" onclick="App.selectGoal('gain', this)">
+              <span class="goal-icon">📈</span>
+              <strong>Набір маси</strong>
+              <small>+300 ккал</small>
+            </button>
+          </div>
 
-    </div>
+          <div class="cycle-block" id="cycle-block" style="display:none">
+            <div class="cycle-toggle-wrap">
+              <div class="cycle-info">
+                <span class="cycle-icon">🌙</span>
+                <div>
+                  <strong>Лютеїнова фаза</strong>
+                  <small>Дні 18-28 (+200 ккал)</small>
+                </div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="cycle-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="step-nav">
+            <button class="btn-outline" onclick="App.prevStep(4)">← Назад</button>
+            <button class="btn-primary" id="next-4" disabled onclick="App.calculate()">Розрахувати ✓</button>
+          </div>
+        </div>
+
+      </div><!-- /home-form -->
+    </div><!-- /home-layout -->
   </div>
 
-  <!-- ── SCREEN 3: Results ── -->
+  <!-- ── SCREEN 2: Results ── -->
   <div class="screen" id="screen-results">
     <div class="results-wrap">
 
-      <button class="back-link" onclick="App.go('screen-form')">← Змінити дані</button>
+      <button class="back-link" onclick="App.go('screen-home')">← Змінити дані</button>
 
-      <!-- KBJU summary card -->
       <div class="summary-card">
         <div class="summary-header">
-          <span class="logo-text small">Cura</span>
+          <span class="logo-text small">🌿 Cura</span>
           <span class="summary-label">Твоя добова норма</span>
         </div>
         <div class="kcal-big" id="kcal-display">— ккал</div>
         <div class="macros-row">
           <div class="macro-item">
-            <div class="macro-value protein" id="protein-display">—</div>
+            <div class="macro-value" id="protein-display">—</div>
             <div class="macro-label">Білки (г)</div>
           </div>
           <div class="macro-item">
-            <div class="macro-value fat" id="fat-display">—</div>
+            <div class="macro-value" id="fat-display">—</div>
             <div class="macro-label">Жири (г)</div>
           </div>
           <div class="macro-item">
-            <div class="macro-value carbs" id="carbs-display">—</div>
+            <div class="macro-value" id="carbs-display">—</div>
             <div class="macro-label">Вуглеводи (г)</div>
           </div>
         </div>
       </div>
 
-      <!-- Plan selector -->
       <div class="plan-tabs">
         <button class="plan-tab active" onclick="App.showPlan(0, this)">Варіант 1</button>
         <button class="plan-tab" onclick="App.showPlan(1, this)">Варіант 2</button>
         <button class="plan-tab" onclick="App.showPlan(2, this)">Варіант 3</button>
       </div>
 
-      <!-- Meal plan output -->
       <div id="plan-output"></div>
 
-      <button class="btn-outline center" onclick="App.go('screen-landing')">Почати знову</button>
+      <button class="btn-outline center" onclick="App.go('screen-home')">Почати знову</button>
     </div>
   </div>
 

@@ -38,46 +38,81 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── LANDING ─────────────────────────────────────────────── */
-#screen-landing {
-  background: linear-gradient(160deg, #EFF4EC 0%, var(--sand) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#screen-landing.active { display: flex; }
+/* ── HOME SCREEN (hero + form) ───────────────────────────── */
+#screen-home { background: var(--bg); }
+#screen-home.active { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 
-.landing-wrap {
-  text-align: center;
-  padding: 32px 24px;
-  max-width: 480px;
+.home-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 540px;
+  max-height: 640px;
+  margin: 32px 24px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.12);
+}
+
+/* ── LEFT: hero ── */
+.home-hero {
+  flex: 1;
+  background: linear-gradient(160deg, #5E7F52 0%, #3d5c35 100%);
+  color: var(--white);
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
-.logo-leaf { font-size: 32px; }
-.logo-text  { font-size: 28px; font-weight: 700; color: var(--sage-dark); letter-spacing: -0.5px; }
+.logo-leaf { font-size: 28px; }
+.logo-text  { font-size: 26px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
 .logo-text.small { font-size: 14px; font-weight: 700; color: var(--sage-dark); }
 
 h1 {
-  font-size: clamp(32px, 6vw, 52px);
+  font-size: clamp(28px, 3.5vw, 42px);
   font-weight: 800;
-  line-height: 1.15;
-  color: var(--charcoal);
-  margin-bottom: 20px;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 16px;
 }
-h1 em { color: var(--sage-dark); font-style: normal; }
+h1 em { color: var(--sage-light); font-style: normal; }
 
 .lead {
-  font-size: 16px;
-  color: var(--charcoal-lt);
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
   line-height: 1.6;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+}
+
+.hero-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hero-features li {
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ── RIGHT: form panel ── */
+.home-form {
+  width: 420px;
+  flex-shrink: 0;
+  background: var(--white);
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 /* ── BUTTONS ─────────────────────────────────────────────── */
@@ -116,20 +151,7 @@ h1 em { color: var(--sage-dark); font-style: normal; }
 .btn-outline:hover { border-color: var(--sage); color: var(--sage); }
 .btn-outline.center { display: block; margin: 20px auto 0; }
 
-/* ── FORM SCREEN ─────────────────────────────────────────── */
-#screen-form {
-  background: var(--bg);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 16px 48px;
-}
-#screen-form.active { display: flex; }
-
-.form-wrap {
-  width: 100%;
-  max-width: 560px;
-}
+/* form-wrap not used in new layout */
 
 /* Steps indicator */
 .steps {
@@ -537,10 +559,29 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 .day-total-nums { display: flex; gap: 16px; font-size: 13px; color: var(--charcoal-lt); }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .home-layout {
+    flex-direction: column;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    min-height: 100vh;
+  }
+  .home-hero {
+    padding: 28px 24px 24px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .home-hero h1 { font-size: 26px; width: 100%; }
+  .hero-features { display: none; }
+  .home-form { width: 100%; padding: 24px 20px; }
+}
+
 @media (max-width: 500px) {
-  h1 { font-size: 30px; }
   .goal-cards { flex-direction: column; }
-  .inputs-grid { gap: 16px; }
+  .inputs-grid { gap: 10px; }
   .meal-name { font-size: 14px; }
   .plan-tabs { gap: 6px; }
   .plan-tab { font-size: 13px; padding: 8px 6px; }
