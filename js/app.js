@@ -24,9 +24,8 @@ const App = {
     document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
 
-    // Show/hide cycle toggle
-    const cycleBlock = document.getElementById('cycle-block');
-    cycleBlock.style.display = value === 'female' ? 'block' : 'none';
+    document.getElementById('cycle-block').style.display = value === 'female' ? 'block' : 'none';
+    document.getElementById('next-1').disabled = false;
   },
 
   // ── Form: goal ─────────────────────────────────────────────
@@ -34,6 +33,22 @@ const App = {
     this.data.goal = value;
     document.querySelectorAll('.goal-card').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
+    document.getElementById('next-4').disabled = false;
+  },
+
+  // ── Enable step-2 button when all inputs filled ────────────
+  checkStep2() {
+    const age    = +document.getElementById('age').value;
+    const weight = +document.getElementById('weight').value;
+    const height = +document.getElementById('height').value;
+    const ok = age >= 14 && age <= 100 && weight >= 30 && weight <= 300 && height >= 100 && height <= 250;
+    document.getElementById('next-2').disabled = !ok;
+  },
+
+  // ── Enable step-3 button when activity selected ────────────
+  checkStep3() {
+    const checked = document.querySelector('input[name="activity"]:checked');
+    document.getElementById('next-3').disabled = !checked;
   },
 
   // ── Step navigation ────────────────────────────────────────

@@ -49,7 +49,7 @@ body {
 
 .landing-wrap {
   text-align: center;
-  padding: 48px 24px;
+  padding: 32px 24px;
   max-width: 480px;
 }
 
@@ -58,7 +58,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 .logo-leaf { font-size: 32px; }
 .logo-text  { font-size: 28px; font-weight: 700; color: var(--sage-dark); letter-spacing: -0.5px; }
@@ -74,10 +74,10 @@ h1 {
 h1 em { color: var(--sage-dark); font-style: normal; }
 
 .lead {
-  font-size: 17px;
+  font-size: 16px;
   color: var(--charcoal-lt);
   line-height: 1.6;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 /* ── BUTTONS ─────────────────────────────────────────────── */
@@ -85,29 +85,36 @@ h1 em { color: var(--sage-dark); font-style: normal; }
   background: var(--sage);
   color: var(--white);
   border: none;
-  padding: 14px 32px;
+  padding: 11px 28px;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
 .btn-primary:hover  { background: var(--sage-dark); }
 .btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  background: #C8C8C8;
+  color: #999;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 .btn-outline {
   background: transparent;
   color: var(--sage-dark);
   border: 2px solid var(--sage-light);
-  padding: 12px 28px;
+  padding: 10px 24px;
   border-radius: 50px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
 }
 .btn-outline:hover { border-color: var(--sage); color: var(--sage); }
-.btn-outline.center { display: block; margin: 24px auto 0; }
+.btn-outline.center { display: block; margin: 20px auto 0; }
 
 /* ── FORM SCREEN ─────────────────────────────────────────── */
 #screen-form {
@@ -115,7 +122,7 @@ h1 em { color: var(--sage-dark); font-style: normal; }
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 40px 16px 80px;
+  padding: 24px 16px 48px;
 }
 #screen-form.active { display: flex; }
 
@@ -130,7 +137,7 @@ h1 em { color: var(--sage-dark); font-style: normal; }
   align-items: center;
   justify-content: center;
   gap: 0;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 .step {
   width: 32px;
@@ -153,17 +160,17 @@ h1 em { color: var(--sage-dark); font-style: normal; }
 .form-step { display: none; }
 .form-step.active { display: block; animation: fadeIn 0.3s ease; }
 
-h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charcoal); }
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charcoal); }
 
 /* Gender buttons */
 .gender-btns {
   display: flex;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 .gender-btn {
   flex: 1;
-  padding: 28px 16px;
+  padding: 16px 12px;
   border: 2px solid var(--sand-dark);
   border-radius: var(--radius);
   background: var(--white);
@@ -171,22 +178,22 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  font-size: 15px;
+  gap: 8px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--charcoal);
   transition: border-color 0.2s, background 0.2s;
 }
 .gender-btn:hover    { border-color: var(--sage-light); }
 .gender-btn.selected { border-color: var(--sage); background: #EFF4EC; }
-.gender-icon { font-size: 36px; }
+.gender-icon { font-size: 28px; }
 
 /* Inputs */
 .inputs-grid {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 .input-group label {
   display: block;
@@ -211,8 +218,8 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
   flex: 1;
   border: none;
   outline: none;
-  padding: 14px 16px;
-  font-size: 18px;
+  padding: 10px 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--charcoal);
   background: transparent;
@@ -228,8 +235,8 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .activity-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 40px;
+  gap: 6px;
+  margin-bottom: 20px;
 }
 .activity-card {
   display: flex;
@@ -237,7 +244,7 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
   background: var(--white);
   border: 2px solid var(--sand-dark);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 10px 14px;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
@@ -255,12 +262,12 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 /* Goal cards */
 .goal-cards {
   display: flex;
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 .goal-card {
   flex: 1;
-  padding: 20px 12px;
+  padding: 14px 10px;
   border: 2px solid var(--sand-dark);
   border-radius: var(--radius);
   background: var(--white);
@@ -268,12 +275,12 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: border-color 0.2s, background 0.2s;
 }
 .goal-card:hover    { border-color: var(--sage-light); }
 .goal-card.selected { border-color: var(--sage); background: #EFF4EC; }
-.goal-icon { font-size: 28px; }
+.goal-icon { font-size: 22px; }
 .goal-card strong { font-size: 14px; color: var(--charcoal); }
 .goal-card small  { font-size: 12px; color: var(--charcoal-lt); text-align: center; }
 
@@ -281,8 +288,8 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .cycle-block {
   background: linear-gradient(135deg, #FDE8EE, #FBE0D6);
   border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 28px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
 }
 .cycle-toggle-wrap {
   display: flex;
@@ -324,7 +331,7 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 /* ── RESULTS SCREEN ──────────────────────────────────────── */
 #screen-results {
   background: var(--bg);
-  padding: 40px 16px 80px;
+  padding: 24px 16px 48px;
   display: flex;
   justify-content: center;
 }
@@ -347,10 +354,10 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 /* Summary card */
 .summary-card {
   background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 20px;
   color: var(--white);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow);
 }
 .summary-header {
@@ -363,10 +370,10 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .summary-label { font-size: 13px; font-weight: 500; }
 
 .kcal-big {
-  font-size: clamp(42px, 8vw, 64px);
+  font-size: clamp(34px, 6vw, 50px);
   font-weight: 800;
   line-height: 1;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .macros-row {
@@ -378,15 +385,15 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 }
 .macro-item {
   flex: 1;
-  padding: 14px 12px;
+  padding: 10px 8px;
   text-align: center;
   border-right: 1px solid rgba(255,255,255,0.15);
 }
 .macro-item:last-child { border-right: none; }
 .macro-value {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .macro-label { font-size: 12px; opacity: 0.8; }
 
@@ -426,7 +433,7 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 12px 16px;
   cursor: pointer;
   user-select: none;
 }
@@ -446,7 +453,7 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .meal-arrow { font-size: 12px; color: var(--charcoal-lt); transition: transform 0.25s; }
 .meal-card.open .meal-arrow { transform: rotate(180deg); }
 
-.meal-body { display: none; padding: 0 20px 20px; }
+.meal-body { display: none; padding: 0 16px 16px; }
 .meal-card.open .meal-body { display: block; animation: fadeIn 0.2s ease; }
 
 .meal-meta {
@@ -472,8 +479,8 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .ingredients li {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  padding: 8px 0;
+  font-size: 13px;
+  padding: 5px 0;
   border-bottom: 1px solid var(--sand);
 }
 .ing-amount { font-weight: 700; color: var(--sage-dark); white-space: nowrap; }
@@ -518,8 +525,8 @@ h2 { font-size: 24px; font-weight: 700; margin-bottom: 28px; color: var(--charco
 .day-total {
   background: var(--sand);
   border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 24px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
