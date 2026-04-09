@@ -199,31 +199,36 @@
 
       <button class="back-link" id="results-back-btn" onclick="App.resultsBack()">← Змінити дані</button>
 
-      <div class="summary-card">
-        <div class="summary-header">
-          <span class="logo-text small">🌿 Cura</span>
-          <span class="summary-label">Твоя добова норма</span>
-        </div>
-        <div class="kcal-big" id="kcal-display">— ккал</div>
-        <div class="macros-row">
-          <div class="macro-item">
-            <div class="macro-value" id="protein-display">—</div>
-            <div class="macro-label">Білки (г)</div>
-          </div>
-          <div class="macro-item">
-            <div class="macro-value" id="fat-display">—</div>
-            <div class="macro-label">Жири (г)</div>
-          </div>
-          <div class="macro-item">
-            <div class="macro-value" id="carbs-display">—</div>
-            <div class="macro-label">Вуглеводи (г)</div>
-          </div>
-        </div>
-      </div>
+      <div class="results-top-row">
 
-      <div class="family-save-bar" id="family-save-bar" style="display:none">
-        <button class="btn-save-family" id="btn-save-family" onclick="App.saveToFamily()">👨‍👩‍👧 Зберегти в сім'ю</button>
-        <a class="family-link-btn" id="go-to-family-btn" onclick="App.goToFamily()" style="display:none">Переглянути сім'ю →</a>
+        <div class="summary-card">
+          <div class="summary-header">
+            <span class="logo-text small">🌿 Cura</span>
+            <span class="summary-label">Твоя добова норма</span>
+          </div>
+          <div class="kcal-big" id="kcal-display">— ккал</div>
+          <div class="macros-row">
+            <div class="macro-item">
+              <div class="macro-value" id="protein-display">—</div>
+              <div class="macro-label">Білки (г)</div>
+            </div>
+            <div class="macro-item">
+              <div class="macro-value" id="fat-display">—</div>
+              <div class="macro-label">Жири (г)</div>
+            </div>
+            <div class="macro-item">
+              <div class="macro-value" id="carbs-display">—</div>
+              <div class="macro-label">Вуглеводи (г)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="family-save-bar" id="family-save-bar" style="display:none">
+          <div class="family-save-label">👨‍👩‍👧 Сім'я</div>
+          <button class="btn-save-family" id="btn-save-family" onclick="App.saveToFamily()">Зберегти в сім'ю</button>
+          <a class="family-link-btn" id="go-to-family-btn" onclick="App.goToFamily()" style="display:none">Переглянути →</a>
+        </div>
+
       </div>
 
       <div class="plan-tabs">

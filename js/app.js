@@ -128,7 +128,7 @@ const App = {
     const saveBar = document.getElementById('family-save-bar');
     saveBar.style.display = 'flex';
     const saveBtn = document.getElementById('btn-save-family');
-    saveBtn.textContent = '👨‍👩‍👧 Зберегти в сім\'ю';
+    saveBtn.textContent = 'Зберегти в сім\'ю';
     saveBtn.disabled = false;
     document.getElementById('go-to-family-btn').style.display = 'none';
 
