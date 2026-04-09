@@ -350,16 +350,38 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 /* Step nav */
 .step-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 
-/* ── RESULTS SCREEN ──────────────────────────────────────── */
-#screen-results {
-  background: var(--bg);
-  padding: 24px 16px 48px;
-  display: flex;
-  justify-content: center;
-}
+/* ── RESULTS SCREEN — two-column layout ─────────────────── */
+#screen-results { background: var(--bg); }
 #screen-results.active { display: flex; }
 
-.results-wrap { width: 100%; max-width: 680px; }
+.results-layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Left: daily norm + meal plan (scrollable) */
+.results-left {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 28px 32px;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+/* Right: family panel */
+.results-right {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--white);
+  border-left: 1px solid var(--sand);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
 
 .back-link {
   background: none;
@@ -373,20 +395,12 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   display: block;
 }
 
-/* Results top row: summary + family card side by side */
-.results-top-row {
-  display: flex;
-  gap: 14px;
-  align-items: stretch;
-  margin-bottom: 16px;
-}
-.results-top-row .summary-card { flex: 1; margin-bottom: 0; }
 
-/* Summary card */
+/* Summary card (compact) */
 .summary-card {
   background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px 16px;
   color: var(--white);
   margin-bottom: 16px;
   box-shadow: var(--shadow);
@@ -395,13 +409,13 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   opacity: 0.85;
 }
-.summary-label { font-size: 13px; font-weight: 500; }
+.summary-label { font-size: 12px; font-weight: 500; }
 
 .kcal-big {
-  font-size: clamp(26px, 4vw, 36px);
+  font-size: clamp(24px, 3vw, 34px);
   font-weight: 800;
   line-height: 1;
   margin-bottom: 10px;
@@ -416,13 +430,13 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 }
 .macro-item {
   flex: 1;
-  padding: 8px 6px;
+  padding: 7px 6px;
   text-align: center;
   border-right: 1px solid rgba(255,255,255,0.15);
 }
 .macro-item:last-child { border-right: none; }
 .macro-value {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   margin-bottom: 2px;
 }
@@ -622,37 +636,37 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 }
 .family-hero-btn:hover { background: rgba(255,255,255,0.28); }
 
-/* ── FAMILY SAVE BAR (results screen — side card) ─────────── */
-.family-save-bar {
+/* ── RIGHT PANEL: family (results screen) ────────────────── */
+.rf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--sand);
+}
+.rf-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.rf-save-block {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  gap: 10px;
-  width: 156px;
-  flex-shrink: 0;
-  background: var(--white);
-  border-radius: 16px;
-  padding: 16px 14px;
-  box-shadow: var(--shadow);
-}
-.family-save-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--charcoal-lt);
-  text-align: center;
+  gap: 8px;
 }
 .btn-save-family {
   background: var(--sage);
   color: var(--white);
   border: none;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 50px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  text-align: center;
   transition: background 0.2s;
+  width: 100%;
 }
 .btn-save-family:hover:not(:disabled) { background: var(--sage-dark); }
 .btn-save-family:disabled {
@@ -660,19 +674,87 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   color: var(--sage-dark);
   cursor: default;
 }
-.family-link-btn {
+.rf-link-btn {
+  background: none;
+  border: none;
   font-size: 13px;
   font-weight: 600;
   color: var(--sage-dark);
   cursor: pointer;
+  text-align: left;
+  padding: 0;
   text-decoration: underline;
-  text-align: center;
 }
 
-@media (max-width: 520px) {
-  .results-top-row { flex-direction: column; }
-  .family-save-bar { width: 100%; flex-direction: row; align-items: center; padding: 12px 16px; }
-  .family-save-label { flex: 1; text-align: left; }
+.rf-members-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+/* Compact member card for right panel */
+.rf-member-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: var(--bg);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.rf-member-card:hover          { background: #EFF4EC; }
+.rf-member-card--active        { background: #EFF4EC; border-color: var(--sage-light); }
+
+.rf-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage-light), var(--sage));
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.rf-info      { flex: 1; min-width: 0; }
+.rf-name      { font-size: 13px; font-weight: 700; color: var(--charcoal); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rf-kcal      { font-size: 13px; font-weight: 700; color: var(--sage-dark); margin-top: 2px; }
+.rf-macros    { font-size: 11px; color: var(--charcoal-lt); margin-top: 1px; }
+
+.rf-empty {
+  text-align: center;
+  padding: 28px 12px;
+  color: var(--charcoal-lt);
+}
+.rf-empty-icon { font-size: 36px; margin-bottom: 8px; }
+.rf-empty p    { font-size: 13px; line-height: 1.6; }
+
+.rf-open-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal-lt);
+  cursor: pointer;
+  text-align: left;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--sand);
+  margin-top: auto;
+}
+.rf-open-btn:hover { color: var(--sage-dark); }
+
+/* Mobile: stack columns */
+@media (max-width: 768px) {
+  .results-layout { flex-direction: column; height: auto; overflow: visible; }
+  .results-left   { padding: 20px 16px 24px; overflow: visible; }
+  .results-right  { width: 100%; border-left: none; border-top: 1px solid var(--sand); }
 }
 
 /* ── FAMILY SCREEN ───────────────────────────────────────── */

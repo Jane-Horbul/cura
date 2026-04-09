@@ -10,9 +10,9 @@ const App = {
     activity: null,
     goal:     null,
   },
-  result:          null,
-  _familyMode:     false,   // true when viewing a member from family screen
-  _savedToFamily:  false,   // true after saving current calc to family
+  result:           null,
+  _savedToFamily:   false,  // true after saving current calc to family
+  _viewingMemberId: null,   // id of family member being viewed (null = own plan)
 
   // ── Navigation ─────────────────────────────────────────────
   go(screenId) {
@@ -114,23 +114,18 @@ const App = {
       && document.getElementById('cycle-toggle').checked;
 
     this.result = Calculator.calculate({ ...this.data, cycleBonus });
-    this._savedToFamily = false;
-    this._familyMode    = false;
+    this._savedToFamily   = false;
+    this._viewingMemberId = null;
 
-    // Update summary card
+    // Update left panel
     document.getElementById('kcal-display').textContent    = `${this.result.kcal} ккал`;
     document.getElementById('protein-display').textContent = this.result.protein;
     document.getElementById('fat-display').textContent     = this.result.fat;
     document.getElementById('carbs-display').textContent   = this.result.carbs;
+    document.getElementById('summary-member-label').textContent = 'Твоя добова норма';
 
-    // Reset back button and save bar
-    document.getElementById('results-back-btn').textContent = '← Змінити дані';
-    const saveBar = document.getElementById('family-save-bar');
-    saveBar.style.display = 'flex';
-    const saveBtn = document.getElementById('btn-save-family');
-    saveBtn.textContent = 'Зберегти в сім\'ю';
-    saveBtn.disabled = false;
-    document.getElementById('go-to-family-btn').style.display = 'none';
+    // Render right family panel
+    this._renderResultsFamilyPanel();
 
     // Show first plan by default
     this.showPlan(0, document.querySelector('.plan-tab'));
@@ -251,14 +246,57 @@ const App = {
     return d.innerHTML;
   },
 
-  // ── Results back button (context-aware) ───────────────────
-  resultsBack() {
-    if (this._familyMode) {
-      this._familyMode = false;
-      this.goToFamily();
-    } else {
-      this.go('screen-home');
+  // ── Render right-panel family list (results screen) ───────
+  _renderResultsFamilyPanel() {
+    const members = Family.getAll();
+    const count   = members.length;
+
+    const badge = document.getElementById('rf-count-badge');
+    if (badge) badge.textContent = count === 0 ? ''
+      : count === 1 ? '1 особа'
+      : count < 5  ? `${count} особи`
+      : `${count} осіб`;
+
+    const saveBtn = document.getElementById('btn-save-family');
+    const goBtn   = document.getElementById('go-to-family-btn');
+    if (saveBtn) {
+      saveBtn.textContent = this._savedToFamily ? '✓ Збережено' : '+ Зберегти в сім\'ю';
+      saveBtn.disabled    = this._savedToFamily;
     }
+    if (goBtn) goBtn.style.display = this._savedToFamily ? 'block' : 'none';
+
+    const listEl = document.getElementById('rf-members-list');
+    if (!listEl) return;
+
+    if (count === 0) {
+      listEl.innerHTML = `
+        <div class="rf-empty">
+          <div class="rf-empty-icon">👨‍👩‍👧</div>
+          <p>Збережи свій раціон і додавай членів сім'ї</p>
+        </div>`;
+      return;
+    }
+
+    const goalLabels = { lose: 'Схуднення', maintain: 'Підтримка', gain: 'Набір маси' };
+    const goalClass  = { lose: 'berry',     maintain: 'sage',       gain: 'terra'      };
+
+    listEl.innerHTML = members.map(m => {
+      const initials = m.name.substring(0, 2).toUpperCase();
+      const active   = this._viewingMemberId === m.id ? 'rf-member-card--active' : '';
+      return `
+        <div class="rf-member-card ${active}" onclick="App.viewMember(${m.id})">
+          <div class="rf-avatar">${this._esc(initials)}</div>
+          <div class="rf-info">
+            <div class="rf-name">
+              ${this._esc(m.name)}
+              <span class="member-goal-badge goal-${goalClass[m.goal] || 'sage'}">${goalLabels[m.goal] || ''}</span>
+            </div>
+            <div class="rf-kcal">${m.result.kcal} ккал/день</div>
+            <div class="rf-macros">Б ${m.result.protein}г · Ж ${m.result.fat}г · В ${m.result.carbs}г</div>
+          </div>
+          <button class="btn-remove-member" onclick="event.stopPropagation();App.removeMember(${m.id})" title="Видалити">✕</button>
+        </div>`;
+    }).join('');
   },
 
   // ── Save current calc to family ───────────────────────────
@@ -276,11 +314,7 @@ const App = {
       result:     this.result,
     });
     this._savedToFamily = true;
-
-    const btn = document.getElementById('btn-save-family');
-    btn.textContent = '✓ Збережено';
-    btn.disabled = true;
-    document.getElementById('go-to-family-btn').style.display = 'inline';
+    this._renderResultsFamilyPanel();
   },
 
   // ── Navigate to family screen ─────────────────────────────
@@ -289,24 +323,22 @@ const App = {
     this.go('screen-family');
   },
 
-  // ── View a member's meal plan ─────────────────────────────
+  // ── View a member's meal plan (updates left panel) ────────
   viewMember(id) {
     const m = Family.get(id);
     if (!m) return;
 
-    this._familyMode = true;
+    this._viewingMemberId = id;
     this.result = m.result;
-    this.data   = { ...m };
 
     document.getElementById('kcal-display').textContent    = `${m.result.kcal} ккал`;
     document.getElementById('protein-display').textContent = m.result.protein;
     document.getElementById('fat-display').textContent     = m.result.fat;
     document.getElementById('carbs-display').textContent   = m.result.carbs;
-
-    document.getElementById('results-back-btn').textContent = '← До сім\'ї';
-    document.getElementById('family-save-bar').style.display = 'none';
+    document.getElementById('summary-member-label').textContent = `Раціон: ${m.name}`;
 
     this.showPlan(0, document.querySelector('.plan-tab'));
+    this._renderResultsFamilyPanel();
     this.go('screen-results');
   },
 
@@ -315,7 +347,9 @@ const App = {
     const m = Family.get(id);
     if (!m) return;
     if (!confirm(`Видалити ${m.name} з сім'ї?`)) return;
+    if (this._viewingMemberId === id) this._viewingMemberId = null;
     Family.remove(id);
+    this._renderResultsFamilyPanel();
     this._renderFamilyScreen();
   },
 

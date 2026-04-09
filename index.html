@@ -195,16 +195,16 @@
 
   <!-- ── SCREEN 2: Results ── -->
   <div class="screen" id="screen-results">
-    <div class="results-wrap">
+    <div class="results-layout">
 
-      <button class="back-link" id="results-back-btn" onclick="App.resultsBack()">← Змінити дані</button>
-
-      <div class="results-top-row">
+      <!-- Ліворуч: добова норма + раціон -->
+      <div class="results-left">
+        <button class="back-link" onclick="App.go('screen-home')">← Змінити дані</button>
 
         <div class="summary-card">
           <div class="summary-header">
             <span class="logo-text small">🌿 Cura</span>
-            <span class="summary-label">Твоя добова норма</span>
+            <span class="summary-label" id="summary-member-label">Твоя добова норма</span>
           </div>
           <div class="kcal-big" id="kcal-display">— ккал</div>
           <div class="macros-row">
@@ -223,23 +223,32 @@
           </div>
         </div>
 
-        <div class="family-save-bar" id="family-save-bar" style="display:none">
-          <div class="family-save-label">👨‍👩‍👧 Сім'я</div>
-          <button class="btn-save-family" id="btn-save-family" onclick="App.saveToFamily()">Зберегти в сім'ю</button>
-          <a class="family-link-btn" id="go-to-family-btn" onclick="App.goToFamily()" style="display:none">Переглянути →</a>
+        <div class="plan-tabs">
+          <button class="plan-tab active" onclick="App.showPlan(0, this)">Варіант 1</button>
+          <button class="plan-tab" onclick="App.showPlan(1, this)">Варіант 2</button>
+          <button class="plan-tab" onclick="App.showPlan(2, this)">Варіант 3</button>
         </div>
 
+        <div id="plan-output"></div>
       </div>
 
-      <div class="plan-tabs">
-        <button class="plan-tab active" onclick="App.showPlan(0, this)">Варіант 1</button>
-        <button class="plan-tab" onclick="App.showPlan(1, this)">Варіант 2</button>
-        <button class="plan-tab" onclick="App.showPlan(2, this)">Варіант 3</button>
+      <!-- Праворуч: сім'я -->
+      <div class="results-right">
+        <div class="rf-header">
+          <span class="rf-title">👨‍👩‍👧 Моя сім'я</span>
+          <span class="family-count-badge" id="rf-count-badge"></span>
+        </div>
+
+        <div class="rf-save-block">
+          <button class="btn-save-family" id="btn-save-family" onclick="App.saveToFamily()">+ Зберегти в сім'ю</button>
+          <button class="rf-link-btn" id="go-to-family-btn" onclick="App.goToFamily()" style="display:none">Переглянути всю сім'ю →</button>
+        </div>
+
+        <div class="rf-members-list" id="rf-members-list"></div>
+
+        <button class="rf-open-btn" onclick="App.goToFamily()">Відкрити сторінку сім'ї →</button>
       </div>
 
-      <div id="plan-output"></div>
-
-      <button class="btn-outline center" onclick="App.go('screen-home')">Почати знову</button>
     </div>
   </div>
 
