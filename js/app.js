@@ -2,6 +2,7 @@
 
 const App = {
   data: {
+    name:     '',
     gender:   null,
     age:      null,
     weight:   null,
@@ -9,7 +10,9 @@ const App = {
     activity: null,
     goal:     null,
   },
-  result: null,
+  result:          null,
+  _familyMode:     false,   // true when viewing a member from family screen
+  _savedToFamily:  false,   // true after saving current calc to family
 
   // ── Navigation ─────────────────────────────────────────────
   go(screenId) {
@@ -105,16 +108,29 @@ const App = {
   calculate() {
     if (!this.data.goal) { alert('Оберіть мету.'); return; }
 
+    this.data.name = document.getElementById('member-name').value.trim() || 'Я';
+
     const cycleBonus = this.data.gender === 'female'
       && document.getElementById('cycle-toggle').checked;
 
     this.result = Calculator.calculate({ ...this.data, cycleBonus });
+    this._savedToFamily = false;
+    this._familyMode    = false;
 
     // Update summary card
     document.getElementById('kcal-display').textContent    = `${this.result.kcal} ккал`;
     document.getElementById('protein-display').textContent = this.result.protein;
     document.getElementById('fat-display').textContent     = this.result.fat;
     document.getElementById('carbs-display').textContent   = this.result.carbs;
+
+    // Reset back button and save bar
+    document.getElementById('results-back-btn').textContent = '← Змінити дані';
+    const saveBar = document.getElementById('family-save-bar');
+    saveBar.style.display = 'flex';
+    const saveBtn = document.getElementById('btn-save-family');
+    saveBtn.textContent = '👨‍👩‍👧 Зберегти в сім\'ю';
+    saveBtn.disabled = false;
+    document.getElementById('go-to-family-btn').style.display = 'none';
 
     // Show first plan by default
     this.showPlan(0, document.querySelector('.plan-tab'));
@@ -233,5 +249,163 @@ const App = {
     const d = document.createElement('div');
     d.textContent = String(str);
     return d.innerHTML;
+  },
+
+  // ── Results back button (context-aware) ───────────────────
+  resultsBack() {
+    if (this._familyMode) {
+      this._familyMode = false;
+      this.goToFamily();
+    } else {
+      this.go('screen-home');
+    }
+  },
+
+  // ── Save current calc to family ───────────────────────────
+  saveToFamily() {
+    if (this._savedToFamily) return;
+    Family.add({
+      name:       this.data.name,
+      gender:     this.data.gender,
+      age:        this.data.age,
+      weight:     this.data.weight,
+      height:     this.data.height,
+      activity:   this.data.activity,
+      goal:       this.data.goal,
+      cycleBonus: this.data.cycleBonus || false,
+      result:     this.result,
+    });
+    this._savedToFamily = true;
+
+    const btn = document.getElementById('btn-save-family');
+    btn.textContent = '✓ Збережено';
+    btn.disabled = true;
+    document.getElementById('go-to-family-btn').style.display = 'inline';
+  },
+
+  // ── Navigate to family screen ─────────────────────────────
+  goToFamily() {
+    this._renderFamilyScreen();
+    this.go('screen-family');
+  },
+
+  // ── View a member's meal plan ─────────────────────────────
+  viewMember(id) {
+    const m = Family.get(id);
+    if (!m) return;
+
+    this._familyMode = true;
+    this.result = m.result;
+    this.data   = { ...m };
+
+    document.getElementById('kcal-display').textContent    = `${m.result.kcal} ккал`;
+    document.getElementById('protein-display').textContent = m.result.protein;
+    document.getElementById('fat-display').textContent     = m.result.fat;
+    document.getElementById('carbs-display').textContent   = m.result.carbs;
+
+    document.getElementById('results-back-btn').textContent = '← До сім\'ї';
+    document.getElementById('family-save-bar').style.display = 'none';
+
+    this.showPlan(0, document.querySelector('.plan-tab'));
+    this.go('screen-results');
+  },
+
+  // ── Remove a member ───────────────────────────────────────
+  removeMember(id) {
+    const m = Family.get(id);
+    if (!m) return;
+    if (!confirm(`Видалити ${m.name} з сім'ї?`)) return;
+    Family.remove(id);
+    this._renderFamilyScreen();
+  },
+
+  // ── Start adding a new member (reset form → home) ─────────
+  startAddMember() {
+    this.data = { name: '', gender: null, age: null, weight: null, height: null, activity: null, goal: null };
+    this._savedToFamily = false;
+
+    // Reset form inputs
+    document.getElementById('member-name').value = '';
+    ['age', 'weight', 'height'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('input[name="activity"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.goal-card').forEach(b => b.classList.remove('selected'));
+    document.getElementById('cycle-block').style.display = 'none';
+    ['next-1','next-2','next-3','next-4'].forEach(id => document.getElementById(id).disabled = true);
+
+    // Reset step indicators
+    document.querySelectorAll('.step').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i === 0) s.classList.add('active');
+    });
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-1').classList.add('active');
+
+    this.go('screen-home');
+  },
+
+  // ── Render family screen content ──────────────────────────
+  _renderFamilyScreen() {
+    const members = Family.getAll();
+    const count   = members.length;
+
+    const badge = document.getElementById('family-count-badge');
+    badge.textContent = count === 0 ? '0 осіб'
+      : count === 1 ? '1 особа'
+      : count < 5  ? `${count} особи`
+      : `${count} осіб`;
+
+    const summaryEl = document.getElementById('family-summary');
+    const listEl    = document.getElementById('family-members-list');
+
+    if (count === 0) {
+      summaryEl.style.display = 'none';
+      listEl.innerHTML = `
+        <div class="family-empty">
+          <div class="family-empty-icon">👨‍👩‍👧</div>
+          <p>Тут поки нікого немає.</p>
+          <p>Додай першого члена сім'ї!</p>
+        </div>`;
+      return;
+    }
+
+    // Family summary totals
+    const totalKcal = members.reduce((s, m) => s + m.result.kcal,    0);
+    const totalP    = members.reduce((s, m) => s + m.result.protein, 0);
+    const totalF    = members.reduce((s, m) => s + m.result.fat,     0);
+    const totalC    = members.reduce((s, m) => s + m.result.carbs,   0);
+
+    summaryEl.style.display = 'block';
+    document.getElementById('family-total-kcal').textContent = totalKcal;
+    document.getElementById('family-total-p').textContent    = totalP;
+    document.getElementById('family-total-f').textContent    = totalF;
+    document.getElementById('family-total-c').textContent    = totalC;
+
+    const goalLabels = { lose: 'Схуднення', maintain: 'Підтримка', gain: 'Набір маси' };
+    const goalClass  = { lose: 'berry',     maintain: 'sage',       gain: 'terra'      };
+
+    listEl.innerHTML = members.map(m => {
+      const initials = m.name.substring(0, 2).toUpperCase();
+      return `
+        <div class="member-card">
+          <div class="member-avatar">${this._esc(initials)}</div>
+          <div class="member-info">
+            <div class="member-name-row">
+              <span class="member-name">${this._esc(m.name)}</span>
+              <span class="member-goal-badge goal-${goalClass[m.goal] || 'sage'}">${goalLabels[m.goal] || m.goal}</span>
+            </div>
+            <div class="member-kcal">${m.result.kcal} ккал/день</div>
+            <div class="member-macros">
+              <span>Б: <strong>${m.result.protein}г</strong></span>
+              <span>Ж: <strong>${m.result.fat}г</strong></span>
+              <span>В: <strong>${m.result.carbs}г</strong></span>
+            </div>
+          </div>
+          <div class="member-actions">
+            <button class="btn-view-member" onclick="App.viewMember(${m.id})">Раціон →</button>
+            <button class="btn-remove-member" onclick="App.removeMember(${m.id})" title="Видалити">✕</button>
+          </div>
+        </div>`;
+    }).join('');
   },
 };
