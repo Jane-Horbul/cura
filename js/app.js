@@ -19,6 +19,8 @@ const App = {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     window.scrollTo(0, 0);
+    const leftPanel = document.querySelector('.results-left');
+    if (leftPanel) leftPanel.scrollTop = 0;
   },
 
   // ── Form: gender ───────────────────────────────────────────
@@ -44,7 +46,7 @@ const App = {
     const age    = +document.getElementById('age').value;
     const weight = +document.getElementById('weight').value;
     const height = +document.getElementById('height').value;
-    const ok = age >= 14 && age <= 100 && weight >= 30 && weight <= 300 && height >= 100 && height <= 250;
+    const ok = age >= 2 && age <= 100 && weight >= 5 && weight <= 300 && height >= 50 && height <= 250;
     document.getElementById('next-2').disabled = !ok;
   },
 
@@ -89,9 +91,9 @@ const App = {
       const age    = +document.getElementById('age').value;
       const weight = +document.getElementById('weight').value;
       const height = +document.getElementById('height').value;
-      if (!age || age < 14 || age > 100)       { alert('Вкажіть коректний вік (14–100 років).'); return false; }
-      if (!weight || weight < 30 || weight > 300) { alert('Вкажіть коректну вагу (30–300 кг).'); return false; }
-      if (!height || height < 100 || height > 250) { alert('Вкажіть коректний зріст (100–250 см).'); return false; }
+      if (!age || age < 2 || age > 100)         { alert('Вкажіть коректний вік (2–100 років).'); return false; }
+      if (!weight || weight < 5 || weight > 300) { alert('Вкажіть коректну вагу (5–300 кг).'); return false; }
+      if (!height || height < 50 || height > 250) { alert('Вкажіть коректний зріст (50–250 см).'); return false; }
       this.data.age    = age;
       this.data.weight = weight;
       this.data.height = height;
@@ -123,14 +125,20 @@ const App = {
     document.getElementById('fat-display').textContent     = this.result.fat;
     document.getElementById('carbs-display').textContent   = this.result.carbs;
     document.getElementById('summary-member-label').textContent = 'Твоя добова норма';
+    this._updateProfileStrip(this.data);
 
-    // Render right family panel
+    // Fill inline results block
+    document.getElementById('ri-kcal').textContent    = `${this.result.kcal} ккал`;
+    document.getElementById('ri-protein').textContent = this.result.protein;
+    document.getElementById('ri-fat').textContent     = this.result.fat;
+    document.getElementById('ri-carbs').textContent   = this.result.carbs;
+    this._fillRiProfile(this.data);
+    document.getElementById('results-inline').style.display = 'block';
+    document.getElementById('results-inline').scrollIntoView({ behavior: 'smooth' });
+
+    // Prepare full plan screen in background
     this._renderResultsFamilyPanel();
-
-    // Show first plan by default
     this.showPlan(0, document.querySelector('.plan-tab'));
-
-    this.go('screen-results');
   },
 
   // ── Render a meal plan ─────────────────────────────────────
@@ -239,6 +247,53 @@ const App = {
     document.getElementById(id).classList.toggle('open');
   },
 
+  // ── Fill profile in inline results block ─────────────────
+  _fillRiProfile(data) {
+    const activityLabels = {
+      sedentary: 'Мін. активність', light: 'Легка активність',
+      moderate: 'Середня активність', active: 'Висока активність', veryActive: 'Дуже висока',
+    };
+    const goalLabels = { lose: '📉 Схуднення', maintain: '⚖️ Підтримка', gain: '📈 Набір маси' };
+    const genderIcon = data.gender === 'female' ? '♀' : data.gender === 'male' ? '♂' : null;
+    const chips = [
+      data.name && data.name !== 'Я' ? `👤 ${data.name}` : null,
+      genderIcon,
+      data.age    ? `${data.age} р.`              : null,
+      data.weight ? `${data.weight} кг`           : null,
+      data.height ? `${data.height} см`           : null,
+      data.activity ? activityLabels[data.activity] : null,
+      data.goal     ? goalLabels[data.goal]         : null,
+    ].filter(Boolean);
+    const el = document.getElementById('ri-profile');
+    if (el) el.innerHTML = chips.map(c => `<span class="profile-chip">${this._esc(c)}</span>`).join('');
+  },
+
+  // ── Fill profile strip in summary card ───────────────────
+  _updateProfileStrip(data) {
+    const activityLabels = {
+      sedentary:  'Мін. активність',
+      light:      'Легка активність',
+      moderate:   'Середня активність',
+      active:     'Висока активність',
+      veryActive: 'Дуже висока',
+    };
+    const goalLabels = { lose: '📉 Схуднення', maintain: '⚖️ Підтримка', gain: '📈 Набір маси' };
+    const genderIcon = data.gender === 'female' ? '♀' : data.gender === 'male' ? '♂' : null;
+
+    const chips = [
+      data.name && data.name !== 'Я' ? `👤 ${data.name}` : null,
+      genderIcon,
+      data.age    ? `${data.age} р.`               : null,
+      data.weight ? `${data.weight} кг`            : null,
+      data.height ? `${data.height} см`            : null,
+      data.activity ? activityLabels[data.activity] : null,
+      data.goal     ? goalLabels[data.goal]         : null,
+    ].filter(Boolean);
+
+    const el = document.getElementById('profile-strip');
+    if (el) el.innerHTML = chips.map(c => `<span class="profile-chip">${this._esc(c)}</span>`).join('');
+  },
+
   // XSS protection
   _esc(str) {
     const d = document.createElement('div');
@@ -336,6 +391,7 @@ const App = {
     document.getElementById('fat-display').textContent     = m.result.fat;
     document.getElementById('carbs-display').textContent   = m.result.carbs;
     document.getElementById('summary-member-label').textContent = `Раціон: ${m.name}`;
+    this._updateProfileStrip(m);
 
     this.showPlan(0, document.querySelector('.plan-tab'));
     this._renderResultsFamilyPanel();
@@ -375,6 +431,7 @@ const App = {
     document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
     document.getElementById('step-1').classList.add('active');
 
+    document.getElementById('results-inline').style.display = 'none';
     this.go('screen-home');
   },
 

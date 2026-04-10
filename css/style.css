@@ -40,7 +40,7 @@ body {
 
 /* ── HOME SCREEN (hero + form) ───────────────────────────── */
 #screen-home { background: var(--bg); }
-#screen-home.active { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+#screen-home.active { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; }
 
 .home-layout {
   display: flex;
@@ -59,7 +59,7 @@ body {
 /* ── LEFT: hero ── */
 .home-hero {
   flex: 1;
-  background: linear-gradient(160deg, #5E7F52 0%, #3d5c35 100%);
+  background: #4a6b3f;
   color: var(--white);
   padding: 48px 44px;
   display: flex;
@@ -103,6 +103,45 @@ h1 em { color: var(--sage-light); font-style: normal; }
   font-size: 14px;
   color: rgba(255,255,255,0.85);
 }
+
+/* ── INLINE RESULTS (below form card) ── */
+.results-inline {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 24px 32px;
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.ri-profile {
+  background: #4a6b3f;
+  padding: 14px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ri-profile .profile-chip { background: rgba(255,255,255,0.2); color: #fff; }
+.ri-body {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.ri-kcal-block { min-width: 160px; }
+.ri-kcal-label { font-size: 12px; color: var(--charcoal-lt); margin-bottom: 4px; }
+.ri-kcal-value { font-size: 36px; font-weight: 800; color: #4a6b3f; line-height: 1; }
+.ri-macros {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+}
+.ri-macro { text-align: center; margin-left: 45px; }
+.ri-macro:first-child { margin-left: 110px; }
+.ri-macro-val { font-size: 26px; font-weight: 700; color: var(--charcoal); }
+.ri-macro-lbl { font-size: 16px; color: var(--charcoal-lt); margin-top: 2px; }
+.ri-plan-btn { margin-left: auto; white-space: nowrap; }
 
 /* ── RIGHT: form panel ── */
 .home-form {
@@ -308,7 +347,7 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 
 /* Cycle toggle */
 .cycle-block {
-  background: linear-gradient(135deg, #FDE8EE, #FBE0D6);
+  background: #FDE8EE;
   border-radius: var(--radius);
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -398,7 +437,7 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 
 /* Summary card (compact) */
 .summary-card {
-  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+  background: var(--sage-dark);
   border-radius: 16px;
   padding: 14px 16px;
   color: var(--white);
@@ -413,6 +452,23 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   opacity: 0.85;
 }
 .summary-label { font-size: 12px; font-weight: 500; }
+
+.profile-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  min-height: 0;
+}
+.profile-strip:empty { margin-bottom: 0; }
+.profile-chip {
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+}
 
 .kcal-big {
   font-size: clamp(24px, 3vw, 34px);
@@ -714,7 +770,7 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage-light), var(--sage));
+  background: var(--sage);
   color: var(--white);
   font-size: 12px;
   font-weight: 800;
@@ -793,7 +849,7 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 
 /* Family summary */
 .family-summary-card {
-  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+  background: var(--sage-dark);
   border-radius: 16px;
   padding: 20px;
   color: var(--white);
@@ -824,7 +880,7 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage-light), var(--sage));
+  background: var(--sage);
   color: var(--white);
   font-size: 15px;
   font-weight: 800;

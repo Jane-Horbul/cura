@@ -75,21 +75,21 @@
             <div class="input-group">
               <label>Вік</label>
               <div class="input-wrap">
-                <input type="number" id="age" min="14" max="100" placeholder="25" oninput="App.checkStep2()">
+                <input type="number" id="age" min="2" max="100" placeholder="25" oninput="App.checkStep2()">
                 <span class="unit">років</span>
               </div>
             </div>
             <div class="input-group">
               <label>Вага</label>
               <div class="input-wrap">
-                <input type="number" id="weight" min="30" max="300" placeholder="65" oninput="App.checkStep2()">
+                <input type="number" id="weight" min="5" max="300" placeholder="65" oninput="App.checkStep2()">
                 <span class="unit">кг</span>
               </div>
             </div>
             <div class="input-group">
               <label>Зріст</label>
               <div class="input-wrap">
-                <input type="number" id="height" min="100" max="250" placeholder="170" oninput="App.checkStep2()">
+                <input type="number" id="height" min="50" max="250" placeholder="170" oninput="App.checkStep2()">
                 <span class="unit">см</span>
               </div>
             </div>
@@ -191,6 +191,33 @@
 
       </div><!-- /home-form -->
     </div><!-- /home-layout -->
+
+    <!-- Inline results block (shown after calculation) -->
+    <div id="results-inline" class="results-inline" style="display:none">
+      <div class="ri-profile" id="ri-profile"></div>
+      <div class="ri-body">
+        <div class="ri-kcal-block">
+          <div class="ri-kcal-label">Добова норма калорій</div>
+          <div class="ri-kcal-value" id="ri-kcal">—</div>
+        </div>
+        <div class="ri-macros">
+          <div class="ri-macro">
+            <div class="ri-macro-val" id="ri-protein">—</div>
+            <div class="ri-macro-lbl">Білки (г)</div>
+          </div>
+          <div class="ri-macro">
+            <div class="ri-macro-val" id="ri-fat">—</div>
+            <div class="ri-macro-lbl">Жири (г)</div>
+          </div>
+          <div class="ri-macro">
+            <div class="ri-macro-val" id="ri-carbs">—</div>
+            <div class="ri-macro-lbl">Вуглеводи (г)</div>
+          </div>
+        </div>
+        <button class="btn-primary ri-plan-btn" onclick="App.go('screen-results')">Переглянути раціон →</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- ── SCREEN 2: Results ── -->
@@ -206,6 +233,7 @@
             <span class="logo-text small">🌿 Cura</span>
             <span class="summary-label" id="summary-member-label">Твоя добова норма</span>
           </div>
+          <div class="profile-strip" id="profile-strip"></div>
           <div class="kcal-big" id="kcal-display">— ккал</div>
           <div class="macros-row">
             <div class="macro-item">
