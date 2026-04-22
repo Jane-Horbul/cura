@@ -12,8 +12,8 @@ const Auth = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error);
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || 'Помилка сервера');
     localStorage.setItem(this.TOKEN_KEY, data.token);
     localStorage.setItem(this.NAME_KEY, data.name);
     return data;
@@ -25,8 +25,8 @@ const Auth = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
     });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error);
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || 'Помилка сервера');
     localStorage.setItem(this.TOKEN_KEY, data.token);
     localStorage.setItem(this.NAME_KEY, data.name);
     return data;
@@ -55,7 +55,7 @@ const Auth = {
       headers: { 'Authorization': `Bearer ${this.getToken()}` },
     });
     if (!r.ok) return null;
-    return r.json();
+    return r.json().catch(() => null);
   },
 
   updateUI() {
