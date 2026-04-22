@@ -139,6 +139,20 @@ const App = {
     // Prepare full plan screen in background
     this._renderResultsFamilyPanel();
     this.showPlan(0, document.querySelector('.plan-tab'));
+
+    // Auto-save if logged in
+    if (Auth.isLoggedIn()) {
+      Auth.saveProfile({
+        memberName: this.data.name,
+        gender:     this.data.gender,
+        age:        this.data.age,
+        weight:     this.data.weight,
+        height:     this.data.height,
+        activity:   this.data.activity,
+        goal:       this.data.goal,
+        result:     this.result,
+      });
+    }
   },
 
   // ── Render a meal plan ─────────────────────────────────────
@@ -292,6 +306,102 @@ const App = {
 
     const el = document.getElementById('profile-strip');
     if (el) el.innerHTML = chips.map(c => `<span class="profile-chip">${this._esc(c)}</span>`).join('');
+  },
+
+  // ── Auth: init on page load ───────────────────────────────
+  async init() {
+    Auth.updateUI();
+    if (!Auth.isLoggedIn()) return;
+    const profile = await Auth.loadProfile();
+    if (profile && profile.result) {
+      this._applyProfile(profile);
+    }
+  },
+
+  _applyProfile(profile) {
+    this.data = {
+      name:     profile.memberName || Auth.getName() || 'Я',
+      gender:   profile.gender,
+      age:      profile.age,
+      weight:   profile.weight,
+      height:   profile.height,
+      activity: profile.activity,
+      goal:     profile.goal,
+    };
+    this.result = typeof profile.result === 'string'
+      ? JSON.parse(profile.result)
+      : profile.result;
+
+    document.getElementById('kcal-display').textContent    = `${this.result.kcal} ккал`;
+    document.getElementById('protein-display').textContent = this.result.protein;
+    document.getElementById('fat-display').textContent     = this.result.fat;
+    document.getElementById('carbs-display').textContent   = this.result.carbs;
+    document.getElementById('summary-member-label').textContent = `Привіт, ${this.data.name}!`;
+    this._updateProfileStrip(this.data);
+    this._renderResultsFamilyPanel();
+    this.showPlan(0, document.querySelector('.plan-tab'));
+    this.go('screen-results');
+  },
+
+  // ── Auth modal ────────────────────────────────────────────
+  showAuthModal(mode = 'login') {
+    document.getElementById('auth-overlay').style.display = 'flex';
+    this.switchAuthTab(mode);
+    document.getElementById('auth-error').style.display = 'none';
+  },
+
+  closeAuthModal() {
+    document.getElementById('auth-overlay').style.display = 'none';
+  },
+
+  switchAuthTab(tab) {
+    document.getElementById('form-login').style.display    = tab === 'login'    ? 'block' : 'none';
+    document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    document.getElementById('auth-error').style.display = 'none';
+  },
+
+  async doLogin() {
+    const email    = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    try {
+      await Auth.login(email, password);
+      this.closeAuthModal();
+      Auth.updateUI();
+      const profile = await Auth.loadProfile();
+      if (profile && profile.result) this._applyProfile(profile);
+    } catch (e) {
+      this._showAuthError(e.message);
+    }
+  },
+
+  async doRegister() {
+    const name     = document.getElementById('reg-name').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    try {
+      await Auth.register(name, email, password);
+      this.closeAuthModal();
+      Auth.updateUI();
+    } catch (e) {
+      this._showAuthError(e.message);
+    }
+  },
+
+  doLogout() {
+    Auth.logout();
+    Auth.updateUI();
+    this.result = null;
+    this.data   = { name: '', gender: null, age: null, weight: null, height: null, activity: null, goal: null };
+    document.getElementById('results-inline').style.display = 'none';
+    this.go('screen-home');
+  },
+
+  _showAuthError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
   },
 
   // XSS protection
@@ -500,3 +610,5 @@ const App = {
     }).join('');
   },
 };
+
+document.addEventListener('DOMContentLoaded', () => App.init());

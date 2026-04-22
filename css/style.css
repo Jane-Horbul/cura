@@ -969,3 +969,111 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
   transition: border-color 0.2s, background 0.2s;
 }
 .btn-add-member:hover { border-color: var(--sage); background: #EFF4EC; }
+
+/* ── Auth bar ────────────────────────────────────────────── */
+.auth-bar {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auth-btn {
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--sage);
+  background: var(--sage);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.auth-btn:hover { opacity: 0.85; }
+.auth-btn-outline {
+  background: var(--white);
+  color: var(--sage-dark);
+}
+.auth-username {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  background: var(--sand);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+/* ── Auth modal ─────────────────────────────────────────── */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-modal {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+}
+.auth-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--charcoal-lt);
+}
+.auth-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 9px;
+  border: 2px solid var(--sand-dark);
+  border-radius: 10px;
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--charcoal-lt);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.auth-tab.active {
+  border-color: var(--sage);
+  background: var(--sage);
+  color: var(--white);
+}
+.auth-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 2px solid var(--sand-dark);
+  border-radius: 10px;
+  font-size: 15px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.auth-input:focus { border-color: var(--sage); }
+.auth-submit { width: 100%; margin-top: 4px; }
+.auth-error {
+  background: #FDECEA;
+  color: #C0392B;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}

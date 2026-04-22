@@ -1,3 +1,8 @@
-FROM nginx:alpine
-COPY . /usr/share/nginx/html
-EXPOSE 80
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npx prisma generate
+EXPOSE 3000
+CMD ["sh", "-c", "npx prisma db push --skip-generate && node server.js"]

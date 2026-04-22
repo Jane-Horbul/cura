@@ -2,5 +2,11 @@ services:
   app:
     build: .
     ports:
-      - "4054:80"
+      - "4054:3000"
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DATABASE_URL: "postgresql://student_admin:vibecode2026pg@172.17.0.1:5433/db_yevheniag"
+      JWT_SECRET: "cura-vibecode-2024"
+      PORT: "3000"

@@ -8,6 +8,43 @@
 </head>
 <body>
 
+  <!-- ── Auth bar (fixed, усі екрани) ── -->
+  <div class="auth-bar">
+    <div id="auth-logged-out" style="display:flex;align-items:center;gap:8px">
+      <button class="auth-btn" onclick="App.showAuthModal('login')">Увійти</button>
+      <button class="auth-btn auth-btn-outline" onclick="App.showAuthModal('register')">Реєстрація</button>
+    </div>
+    <div id="auth-logged-in" style="display:none;align-items:center;gap:10px">
+      <span class="auth-username" id="auth-username"></span>
+      <button class="auth-btn auth-btn-outline" onclick="App.doLogout()">Вийти</button>
+    </div>
+  </div>
+
+  <!-- ── Auth modal ── -->
+  <div class="auth-overlay" id="auth-overlay" onclick="App.closeAuthModal()" style="display:none">
+    <div class="auth-modal" onclick="event.stopPropagation()">
+      <button class="auth-close" onclick="App.closeAuthModal()">✕</button>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="App.switchAuthTab('login')">Увійти</button>
+        <button class="auth-tab" id="tab-register" onclick="App.switchAuthTab('register')">Реєстрація</button>
+      </div>
+      <div class="auth-error" id="auth-error" style="display:none"></div>
+
+      <div id="form-login">
+        <input type="email" id="auth-email" class="auth-input" placeholder="Email">
+        <input type="password" id="auth-password" class="auth-input" placeholder="Пароль">
+        <button class="btn-primary auth-submit" onclick="App.doLogin()">Увійти →</button>
+      </div>
+
+      <div id="form-register" style="display:none">
+        <input type="text" id="reg-name" class="auth-input" placeholder="Ваше ім'я">
+        <input type="email" id="reg-email" class="auth-input" placeholder="Email">
+        <input type="password" id="reg-password" class="auth-input" placeholder="Пароль (мін. 6 символів)">
+        <button class="btn-primary auth-submit" onclick="App.doRegister()">Зареєструватися →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── SCREEN 1: Hero + Form (єдиний перший екран) ── -->
   <div class="screen active" id="screen-home">
     <div class="home-layout">
@@ -319,6 +356,7 @@
   <script src="js/calculator.js"></script>
   <script src="js/recipes.js"></script>
   <script src="js/family.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
