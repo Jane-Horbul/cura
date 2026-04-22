@@ -501,20 +501,23 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--charco
 /* Plan tabs */
 .plan-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
 }
 .plan-tab {
-  flex: 1;
-  padding: 10px;
+  flex: 1 1 calc(33% - 8px);
+  min-width: 100px;
+  padding: 9px 10px;
   border: 2px solid var(--sand-dark);
   border-radius: 10px;
   background: var(--white);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--charcoal-lt);
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
 }
 .plan-tab.active {
   border-color: var(--sage);
