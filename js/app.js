@@ -107,7 +107,7 @@ const App = {
   },
 
   // ── Calculate & show results ───────────────────────────────
-  calculate() {
+  async calculate() {
     if (!this.data.goal) { alert('Оберіть мету.'); return; }
 
     this.data.name = document.getElementById('member-name').value.trim() || 'Я';
@@ -136,9 +136,9 @@ const App = {
     document.getElementById('results-inline').style.display = 'block';
     document.getElementById('results-inline').scrollIntoView({ behavior: 'smooth' });
 
-    // Prepare full plan screen in background
+    // Prepare full plan screen and load meals
     this._renderResultsFamilyPanel();
-    this.showPlan(0, document.querySelector('.plan-tab'));
+    this.loadMeals();
 
     // Auto-save if logged in
     if (Auth.isLoggedIn()) {
@@ -153,6 +153,107 @@ const App = {
         result:     this.result,
       });
     }
+  },
+
+  // ── Load meals from Spoonacular ────────────────────────────
+  async loadMeals() {
+    const output = document.getElementById('plan-output');
+    const btn = document.getElementById('btn-refresh-meals');
+    if (btn) btn.disabled = true;
+
+    output.innerHTML = `
+      <div style="text-align:center;padding:40px;color:#888">
+        <div style="font-size:2rem">🍽️</div>
+        <div>Підбираємо рецепти...</div>
+      </div>`;
+
+    try {
+      const r = await fetch(`/api/meals?calories=${this.result.kcal}`);
+      const data = await r.json();
+      if (!r.ok || !data.meals) throw new Error();
+      this._renderSpoonMeals(data.meals);
+    } catch {
+      // Fallback to static
+      this.showPlan(0, document.querySelector('.plan-tab'));
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  },
+
+  // ── Render Spoonacular meals ───────────────────────────────
+  _renderSpoonMeals(meals) {
+    const mealTypes = [
+      { key: 'breakfast', label: 'Сніданок', icon: '🌅' },
+      { key: 'lunch',     label: 'Обід',     icon: '☀️' },
+      { key: 'dinner',    label: 'Вечеря',   icon: '🌙' },
+    ];
+
+    let totalKcal = 0, totalP = 0, totalF = 0, totalC = 0;
+
+    const cardsHTML = mealTypes.map(({ key, label, icon }) => {
+      const meal = meals[key];
+      if (!meal) return '';
+
+      totalKcal += meal.kbju.kcal;
+      totalP    += meal.kbju.protein;
+      totalF    += meal.kbju.fat;
+      totalC    += meal.kbju.carbs;
+
+      const ingredients = meal.ingredients.map(i =>
+        `<li><span>${this._esc(i.name)}</span><span class="ing-amount">${i.amount} ${this._esc(i.unit)}</span></li>`
+      ).join('');
+
+      const steps = meal.steps.map((s, i) =>
+        `<li><span class="step-num">${i + 1}</span><span>${this._esc(s)}</span></li>`
+      ).join('');
+
+      const cardId = `spoon-${key}`;
+
+      return `
+        <div class="meal-card" id="${cardId}">
+          <div class="meal-header" onclick="App.toggleMeal('${cardId}')">
+            <div class="meal-header-left">
+              <div>
+                <div class="meal-type-badge">${icon} ${label}</div>
+                <div class="meal-name">${this._esc(meal.name)}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="meal-kcal">${meal.kbju.kcal} ккал</span>
+              <span class="meal-arrow">▼</span>
+            </div>
+          </div>
+          <div class="meal-body">
+            <div class="meal-meta">
+              <span>⏱ ${this._esc(meal.time)}</span>
+              ${meal.sourceUrl ? `<a href="${meal.sourceUrl}" target="_blank" style="font-size:0.8rem;color:#6b8f71">Джерело →</a>` : ''}
+            </div>
+            <div class="section-title">Інгредієнти</div>
+            <ul class="ingredients">${ingredients}</ul>
+            <div class="section-title">Приготування</div>
+            <ol class="recipe-steps">${steps}</ol>
+            <div class="macro-mini">
+              <div class="macro-mini-item"><div class="val">${meal.kbju.protein}г</div><div class="lbl">Білки</div></div>
+              <div class="macro-mini-item"><div class="val">${meal.kbju.fat}г</div><div class="lbl">Жири</div></div>
+              <div class="macro-mini-item"><div class="val">${meal.kbju.carbs}г</div><div class="lbl">Вуглеводи</div></div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    const totalHTML = `
+      <div class="day-total">
+        <strong>📊 Разом за день</strong>
+        <div class="day-total-nums">
+          <span><strong>${totalKcal}</strong> ккал</span>
+          <span>Б: <strong>${totalP}г</strong></span>
+          <span>Ж: <strong>${totalF}г</strong></span>
+          <span>В: <strong>${totalC}г</strong></span>
+        </div>
+      </div>`;
+
+    document.getElementById('plan-output').innerHTML = cardsHTML + totalHTML;
+    this.toggleMeal('spoon-breakfast');
   },
 
   // ── Render a meal plan ─────────────────────────────────────

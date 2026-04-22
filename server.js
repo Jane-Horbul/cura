@@ -7,6 +7,7 @@ const path    = require('path');
 const app    = express();
 const prisma = new PrismaClient();
 const SECRET = process.env.JWT_SECRET || 'cura-secret-2024';
+const SPOON  = process.env.SPOONACULAR_KEY;
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -88,6 +89,64 @@ app.get('/api/profile', auth, async (req, res) => {
     res.json(profile || {});
   } catch (e) {
     console.error('load profile error:', e);
+    res.status(500).json({ error: 'Помилка сервера' });
+  }
+});
+
+// Meal plan from Spoonacular
+app.get('/api/meals', async (req, res) => {
+  try {
+    const calories = parseInt(req.query.calories) || 2000;
+
+    // Get day meal plan
+    const planRes = await fetch(
+      `https://api.spoonacular.com/mealplanner/generate?timeFrame=day&targetCalories=${calories}&apiKey=${SPOON}`
+    );
+    const plan = await planRes.json();
+
+    if (!plan.meals) return res.status(502).json({ error: 'Не вдалось отримати рецепти' });
+
+    // Fetch full info for each meal in parallel
+    const details = await Promise.all(
+      plan.meals.map(m =>
+        fetch(`https://api.spoonacular.com/recipes/${m.id}/information?includeNutrition=true&apiKey=${SPOON}`)
+          .then(r => r.json())
+      )
+    );
+
+    // Convert to our format
+    const mealKeys = ['breakfast', 'lunch', 'dinner'];
+    const meals = {};
+
+    details.forEach((d, i) => {
+      const key = mealKeys[i];
+      const nutrients = d.nutrition?.nutrients || [];
+      const get = name => Math.round(nutrients.find(n => n.name === name)?.amount || 0);
+
+      meals[key] = {
+        name: d.title,
+        time: `${d.readyInMinutes} хв`,
+        method: d.dishTypes?.[0] || 'приготування',
+        ingredients: (d.extendedIngredients || []).map(ing => ({
+          name: ing.name,
+          amount: Math.round(ing.measures.metric.amount),
+          unit: ing.measures.metric.unitShort || 'г',
+        })),
+        steps: (d.analyzedInstructions?.[0]?.steps || []).map(s => s.step),
+        kbju: {
+          kcal:    get('Calories'),
+          protein: get('Protein'),
+          fat:     get('Fat'),
+          carbs:   get('Carbohydrates'),
+        },
+        image:     d.image,
+        sourceUrl: d.sourceUrl,
+      };
+    });
+
+    res.json({ meals, nutrients: plan.nutrients });
+  } catch (e) {
+    console.error('meals error:', e);
     res.status(500).json({ error: 'Помилка сервера' });
   }
 });
